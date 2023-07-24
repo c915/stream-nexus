@@ -128,6 +128,9 @@ function waitForElm(selector) {
 (function() {
     'use strict';
 
+    // Odysee is kinda janky, witing for element '.livestream__comments'
+    // directly doesn't work, and if you don't wait for '.chat__wrapper'
+    // first, chats will be sent 3 times to chat server.
     waitForElm(".chat__wrapper")
         .then((elm) => {
         const socket = new WebSocket("ws://localhost:3000/chat.ws");
