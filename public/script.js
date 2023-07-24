@@ -14,7 +14,25 @@
 
     // Connection opened
     socket.addEventListener("open", (event) => {
-        socket.send("Hello Server!");
+        socket.send(
+            JSON.stringify({
+                id: crypto.randomUUID(),
+                platform: "ChatOverlay",
+                username: "ChatOverlay",
+                message: "ChatOverlay connected.",
+                sent_at: Date.now(), // System timestamp for display ordering.
+                received_at: Date.now(), // Local timestamp for management.
+                avatar: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
+                is_premium: false,
+                amount: 0,
+                currency: "ZWL",
+                is_verified: false,
+                is_sub: false,
+                is_mod: false,
+                is_owner: false,
+                is_staff: false,
+            })
+        );
     });
 
     // Listen for messages
