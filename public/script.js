@@ -2,14 +2,14 @@
     const main = document.querySelector("main");
 
     // Create WebSocket connection.
-    const socket = new WebSocket("ws://localhost:3000/chat.ws");
-    const reconnect = () => {
+    let socket = new WebSocket("ws://localhost:3000/chat.ws");
+    const reconnect = (socket) => {
         // check if socket is connected
         if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
             return true;
         }
         // attempt to connect
-        const socket = new WebSocket("ws://localhost:3000/chat.ws");
+        socket = new WebSocket("ws://localhost:3000/chat.ws");
     };
 
     // Connection opened
@@ -54,11 +54,11 @@
 
     socket.addEventListener("close", (event) => {
         console.log("Socket has closed. Attempting reconnect.", event.reason);
-        setTimeout(function () { reconnect(); }, 3000);
+        setTimeout(function () { reconnect(socket); }, 3000);
     });
 
     socket.addEventListener("error", (event) => {
         socket.close();
-        setTimeout(function () { reconnect(); }, 3000);
+        setTimeout(function () { reconnect(socket); }, 3000);
     });
 })();
