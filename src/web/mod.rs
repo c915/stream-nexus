@@ -63,6 +63,6 @@ async fn websocket(req: HttpRequest, stream: web::Payload) -> Result<HttpRespons
     };
 
     let resp = ws::start(client, &req, stream);
-    println!("{:?}", resp);
+    log::debug!("{:?}", resp);
     resp
 }

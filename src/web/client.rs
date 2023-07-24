@@ -131,8 +131,15 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ChatClient {
             ws::Message::Pong(_) => {
                 self.last_heartbeat_at = Instant::now();
             }
-            ws::Message::Text(_) => {
-                log::debug!("Unexpected ChatClient text input.")
+            ws::Message::Text(text) => {
+                let data_json = serde_json::from_str::<crate::message::Message>(&text.to_string());
+                if let Err(err) = data_json {
+                    log::error!("{err}");
+                    log::error!("Failed to parse message: {text}");
+                    return;
+                }
+                let msg = data_json.unwrap();
+                self.server.do_send(message::Content { chat_message: msg });
             }
             ws::Message::Binary(_) => log::warn!("Unexpected ChatClient binary."),
             ws::Message::Close(reason) => {
