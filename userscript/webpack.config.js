@@ -38,6 +38,8 @@ module.exports = {
             // @description  Unify, and SNEED!
             // @author       Sneed
             // @match        https://www.youtube.com/live_chat*
+            // @match        https://odysee.com/*/*
+            // @match        https://rumble.com/*
             // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
             // @grant        none
             // ==/UserScript==
