@@ -1,6 +1,6 @@
-import { OdyseeScraper } from './OdyseeScraper';
-import { RumbleScraper } from './RumbleScraper';
-import { YouTubeScraper } from './YouTubeScraper';
+import { OdyseeScraper } from './scrapers/OdyseeScraper';
+import { RumbleScraper } from './scrapers/RumbleScraper';
+import { YouTubeScraper } from './scrapers/YouTubeScraper';
 
 
 if (document.location.host === 'www.youtube.com') {

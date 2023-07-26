@@ -1,5 +1,5 @@
-import { ChatScraper } from './ChatScraper';
-import { ChatMessage } from './ChatMessage';
+import { ChatScraper } from '../ChatScraper';
+import { ChatMessage } from '../ChatMessage';
 
 export class YouTubeScraper implements ChatScraper {
     ws: WebSocket;
