@@ -55,7 +55,7 @@ export class RumbleScraper implements ChatScraper {
         mutation.addedNodes.forEach((node) => {
             const element = node as HTMLElement;
 
-            // Rumble defaults avatars to letters which are embedded via CSS 
+            // Rumble defaults avatars to letters which are embedded via CSS
             // thus ends up empty, use Rumble logo instead.
             const avatar =
                 element.querySelector<HTMLImageElement>(

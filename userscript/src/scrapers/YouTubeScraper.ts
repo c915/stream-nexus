@@ -17,7 +17,7 @@ export class YouTubeScraper implements ChatScraper {
     chatBind(): void {
         const targetNode = this.getChatContainer();
         if (targetNode === null) {
-            throw new Error("Could not find chat container.");
+            throw new Error('Could not find chat container.');
         }
         targetNode.classList.add('sneed-chat-container');
 
@@ -29,7 +29,10 @@ export class YouTubeScraper implements ChatScraper {
 
         const callback: MutationCallback = (mutationList, _observer) => {
             for (const mutation of mutationList) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                if (
+                    mutation.type === 'childList' &&
+                    mutation.addedNodes.length > 0
+                ) {
                     const messages = this.observeMutations(mutation);
                     if (messages) {
                         this.addMessages(messages);
@@ -93,22 +96,24 @@ export class YouTubeScraper implements ChatScraper {
             // "Verified" is exclusively denominated by a badge, but other types can be found that way too.
             // Whatever, just check the badges too.
             let is_verified = false;
-            element.querySelectorAll(
-                'yt-live-chat-author-badge-renderer.yt-live-chat-author-chip',
-            ).forEach((badge) => {
-                switch (badge.getAttribute('type')) {
-                    case 'moderator':
-                        is_mod = true;
-                        break;
-                    case 'verified':
-                        is_verified = true;
-                        break;
-                    case 'member':
-                        is_sub = true;
-                        break;
-                }
-                // I don't think YouTuber staff will ever use live chat?
-            });
+            element
+                .querySelectorAll(
+                    'yt-live-chat-author-badge-renderer.yt-live-chat-author-chip',
+                )
+                .forEach((badge) => {
+                    switch (badge.getAttribute('type')) {
+                        case 'moderator':
+                            is_mod = true;
+                            break;
+                        case 'verified':
+                            is_verified = true;
+                            break;
+                        case 'member':
+                            is_sub = true;
+                            break;
+                    }
+                    // I don't think YouTuber staff will ever use live chat?
+                });
 
             const chatMessage: ChatMessage = {
                 id: crypto.randomUUID(),
