@@ -24,6 +24,13 @@ pub async fn index() -> impl Responder {
     IndexTemplate {}
 }
 
+#[actix_web::get("/stream-nexus.user.js")]
+pub async fn userscript() -> impl Responder {
+    HttpResponse::Ok()
+        .append_header((header::CONTENT_TYPE, "text/raw"))
+        .body(std::fs::read_to_string("public/stream-nexus.user.js").unwrap())
+}
+
 #[actix_web::get("/script.js")]
 pub async fn javascript() -> impl Responder {
     HttpResponse::Ok()

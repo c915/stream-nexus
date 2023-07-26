@@ -29,6 +29,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::stylesheet)
             .service(web::index)
             .service(web::websocket)
+            .service(web::userscript)
             .service(web::logo)
     })
     .workers(1)
@@ -36,7 +37,10 @@ async fn main() -> std::io::Result<()> {
     .expect("Could not bind requested address.")
     .run();
 
-    log::info!("Server running at http://{server_addr}:{server_port}/");
+    log::info!("Server running at: http://{server_addr}:{server_port}/");
+    log::info!(
+        "Userscript can be installed here: http://{server_addr}:{server_port}/stream-nexus.user.js"
+    );
 
     server.await
 }
