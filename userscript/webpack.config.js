@@ -31,7 +31,7 @@ module.exports = {
             raw: true,
             banner: stripIndent`
             // ==UserScript==
-            // @name         Test UserScript from TypeScript w/webpack
+            // @name         Stream-Nexus Chat Scraper
             // @namespace    http://tampermonkey.net/
             // @version      0.1
             // @description  Unify, and SNEED!
