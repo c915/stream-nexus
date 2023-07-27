@@ -26,9 +26,17 @@ pub async fn index() -> impl Responder {
 
 #[actix_web::get("/stream-nexus.user.js")]
 pub async fn userscript() -> impl Responder {
-    HttpResponse::Ok()
-        .append_header((header::CONTENT_TYPE, "text/raw"))
-        .body(std::fs::read_to_string("public/stream-nexus.user.js").unwrap())
+    match std::fs::read_to_string("public/stream-nexus.user.js") {
+        Ok(content) => {
+            HttpResponse::Ok()
+            .append_header((header::CONTENT_TYPE, "text/raw"))
+            .body(content)
+        },
+        Err(_) => {
+            log::error!("You need to build the userscript first.");
+            HttpResponse::NotFound().finish()
+        }
+    }
 }
 
 #[actix_web::get("/script.js")]
