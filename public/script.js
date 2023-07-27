@@ -1,8 +1,7 @@
 // https://stackoverflow.com/a/23176223
 function connect(reconnected = false) {
-
-    var main = document.querySelector('main');
-    let ws = new WebSocket('ws://localhost:3000/chat.ws');
+    const main = document.querySelector('main');
+    const ws = new WebSocket('ws://localhost:3000/chat.ws');
 
     ws.addEventListener('open', (_event) => {
         if (ws.readyState !== WebSocket.OPEN) {
