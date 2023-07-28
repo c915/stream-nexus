@@ -1,5 +1,6 @@
 import { ChatScraper } from '../ChatScraper';
 import { ChatMessage } from '../ChatMessage';
+import { waitForElement, waitForElements } from '../utils';
 
 export class YouTubeScraper implements ChatScraper {
     ws: WebSocket;
@@ -20,6 +21,8 @@ export class YouTubeScraper implements ChatScraper {
             throw new Error('Could not find chat container.');
         }
         targetNode.classList.add('sneed-chat-container');
+
+        this.setLiveChat();
 
         const config: MutationObserverInit = {
             childList: true,
@@ -136,5 +139,14 @@ export class YouTubeScraper implements ChatScraper {
         });
 
         return messages;
+    }
+
+    async setLiveChat(): Promise<void> {
+        const chatDropDown = await waitForElement('.yt-dropdown-menu[role="group"]') as (HTMLElement | null);
+        chatDropDown?.click();
+
+        const chatSelectorList = await waitForElements('.yt-simple-endpoint.yt-dropdown-menu');
+        const liveChatElement = chatSelectorList[1] as HTMLElement;
+        liveChatElement?.click();
     }
 }
