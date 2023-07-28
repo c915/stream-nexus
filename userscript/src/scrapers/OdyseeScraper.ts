@@ -1,6 +1,5 @@
 import { ChatMessage } from '../ChatMessage';
 import { ChatScraper } from '../ChatScraper';
-import { waitForElement } from '../utils';
 
 export class OdyseeScraper implements ChatScraper {
     ws: WebSocket;
@@ -16,8 +15,8 @@ export class OdyseeScraper implements ChatScraper {
     }
 
     async chatBind(): Promise<void> {
-        await waitForElement('.chat__wrapper');
-        await waitForElement('.livestream__comments');
+        await this.waitForElement('.chat__wrapper');
+        await this.waitForElement('.livestream__comments');
 
         const targetNode = this.getChatContainer();
         if (targetNode === null) {
@@ -131,5 +130,25 @@ export class OdyseeScraper implements ChatScraper {
         });
 
         return messages;
+    }
+
+    waitForElement(selector: string) {
+        return new Promise((resolve) => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
+            }
+
+            const observer = new MutationObserver((_mutations) => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+        });
     }
 }
