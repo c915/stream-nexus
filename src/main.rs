@@ -4,14 +4,14 @@ mod message;
 mod web;
 
 use actix::Actor;
-use actix_web::{App, HttpServer};
+use actix_web::{App, HttpServer, middleware};
 
 use crate::web::ChatServer;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenvy::dotenv().expect("Could not load .env file");
-    env_logger::init();
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
 
     let server_addr = std::env::var("SERVER_ADDR").expect("'SERVER_ADDR' must be set.");
     let server_port = std::env::var("SERVER_PORT")
@@ -31,6 +31,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::websocket)
             .service(web::userscript)
             .service(web::logo)
+            .wrap(middleware::Logger::default())
     })
     .workers(1)
     .bind((server_addr.as_ref(), server_port))
