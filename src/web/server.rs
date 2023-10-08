@@ -83,6 +83,7 @@ impl Handler<message::Content> for ChatServer {
             .get_usd(&msg.chat_message.currency, &msg.chat_message.amount);
 
         // Record super chats/premium chats to database
+        // https://stackoverflow.com/a/64576921
         if msg.chat_message.is_premium {
             let database = self.database.clone();
             let message = msg.chat_message.clone();

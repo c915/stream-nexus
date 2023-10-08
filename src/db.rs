@@ -112,9 +112,9 @@ pub(crate) async fn set_unread_super_chat(pool: &SqlitePool, id: i64) -> anyhow:
         r#"UPDATE super_chats SET read = FALSE, read_at = NULL WHERE id = ?1"#,
         id
     )
-        .execute(&mut *conn)
-        .await?
-        .rows_affected();
+    .execute(&mut *conn)
+    .await?
+    .rows_affected();
 
     Ok(rows_affected)
 }
