@@ -13,6 +13,7 @@ use crate::web::ChatServer;
 
 use actix::Actor;
 use actix_web::{App, HttpServer};
+use actix_web::web::Data;
 use anyhow::Result;
 use sqlx::SqlitePool;
 
@@ -22,27 +23,30 @@ async fn main() -> Result<(), std::io::Error> {
     env_logger::init();
 
     let db_url = env::var("DATABASE_URL").expect("'DATABASE_URL' must be set.");
-    let db = SqlitePool::connect(&db_url).await
+    let pool = SqlitePool::connect(&db_url).await
         .expect("Could not connect to database.");
 
     let chat = ChatServer::new(
         exchange::fetch_exchange_rates()
             .await
             .expect("Failed to fetch exchange rates."),
-        db.clone(),
+        pool.clone(),
     )
     .start();
     let chat_for_server = chat.clone();
 
+
     HttpServer::new(move || {
         App::new()
             .app_data(chat_for_server.clone())
+            .app_data(Data::new(pool.clone()))
             .service(web::javascript)
             .service(web::stylesheet)
             .service(web::colors)
             .service(web::index)
             .service(web::websocket)
             .service(web::logo)
+            .service(web::api_resources())
     })
     .workers(1)
     .bind(("127.0.0.1", 1350))

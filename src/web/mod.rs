@@ -1,7 +1,9 @@
 mod client;
 mod message;
 mod server;
+mod api;
 
+pub use api::api_resources;
 pub use client::ChatClient;
 pub use message::Content as ChatMessage;
 pub use server::ChatServer;
