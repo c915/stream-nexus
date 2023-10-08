@@ -1,5 +1,7 @@
-use actix::{Actor, Context, Handler, Recipient};
+use actix::{Actor, AsyncContext, Context, fut, Handler, Recipient};
 use std::collections::HashMap;
+use sqlx::SqlitePool;
+use crate::db::add_super_chat;
 
 use super::message;
 use crate::exchange::ExchangeRates;
@@ -13,15 +15,17 @@ pub struct Connection {
 pub struct ChatServer {
     pub clients: HashMap<usize, Connection>,
     pub exchange_rates: ExchangeRates,
+    pub database: SqlitePool,
 }
 
 impl ChatServer {
-    pub fn new(exchange_rates: ExchangeRates) -> Self {
+    pub fn new(exchange_rates: ExchangeRates, database: SqlitePool) -> Self {
         log::info!("Chat actor starting up.");
 
         Self {
             clients: HashMap::new(),
             exchange_rates,
+            database,
         }
     }
 }
@@ -71,12 +75,30 @@ impl Handler<message::Disconnect> for ChatServer {
 impl Handler<message::Content> for ChatServer {
     type Result = ();
 
-    fn handle(&mut self, msg: message::Content, _: &mut Context<Self>) -> Self::Result {
+    fn handle(&mut self, msg: message::Content, ctx: &mut Context<Self>) -> Self::Result {
         log::debug!("[ChatServer] {}", msg.chat_message.to_console_msg());
 
         let usd = self
             .exchange_rates
             .get_usd(&msg.chat_message.currency, &msg.chat_message.amount);
+
+        // Record super chats/premium chats to database
+        if msg.chat_message.is_premium {
+            let database = self.database.clone();
+            let message = msg.chat_message.clone();
+            let fut = async move {
+                match add_super_chat(&database, &message, usd).await {
+                    Ok(id) => {
+                        log::debug!("[Database] Added super chat {} to database.", id);
+                    },
+                    Err(e) => {
+                        log::error!("[Database] Could not add super chat to database: {}", e);
+                    }
+                }
+            };
+            let fut = fut::wrap_future::<_, Self>(fut);
+            ctx.spawn(fut);
+        }
 
         let mut chat_msg = msg.chat_message;
         chat_msg.amount = usd;

@@ -8,3 +8,23 @@ Inlining your stream chat on your video enhances the viewer experiences, encoura
 Multicasting is increasingly popular as new platforms emerge and existing platforms become more restrictive. SNEED is a tool to help you multicast more effectively and support alternative tech without dividing your existing viewing base.
 
 Unify, and SNEED!
+
+## Setup
+
+1. Declare the database URL
+
+    ```
+    export DATABASE_URL="sqlite:super_chats.db"
+    ```
+
+2. Create the database.
+
+    ```
+    $ sqlx db create
+    ```
+
+3. Run sql migrations
+
+    ```
+    $ sqlx migrate run
+    ```

@@ -10,7 +10,7 @@ struct MessageTemplate<'a> {
     message: &'a Message,
 }
 
-#[derive(Serialize, Deserialize, Debug, ActixMessage)]
+#[derive(Serialize, Deserialize, Clone, Debug, ActixMessage)]
 #[rtype(result = "()")]
 pub struct Message {
     pub id: Uuid,
@@ -47,6 +47,9 @@ impl Default for Message {
             .as_millis() as i64;
 
         Message {
+            // consider moving to v7 when stable (currently unstable feature in uuid crate.)
+            // https://docs.rs/uuid/latest/uuid/#unstable-features
+            // https://docs.rs/uuid/latest/uuid/#which-uuid-version-should-i-use
             id: Uuid::new_v4(),
             platform: "NONE".to_string(),
             message: "DEFAULT_MESSAGE".to_string(),

@@ -8,13 +8,22 @@ pub async fn fetch_exchange_rates() -> Result<ExchangeRates, anyhow::Error> {
     let response = reqwest::get(RATE_API_ENDPOINT).await?;
 
     // Check if the request was successful
+    // NOTE: Cannot rely on status code, exchangerate.host replies with 200 OK even in the case
+    // of missing access key.
     if response.status().is_success() {
         // Parse the JSON response into a struct
-        let exchange_rates: ExchangeRates = match response.text().await {
-            Ok(text) => serde_json::from_str(&text)?,
-            Err(_) => return Err(anyhow::anyhow!("Could not parse JSON response")),
-        };
-        Ok(exchange_rates)
+        match response.text().await {
+            Ok(text) => {
+                match serde_json::from_str(&text) {
+                    Ok(rates) => Ok(rates),
+                    Err(_) => {
+                        log::error!("Failed to fetch Exchange Rates! System will rely on old data!");
+                        Ok(serde_json::from_str(RATE_API_FALLBACK)?)
+                    }
+                }
+            },
+            Err(_) => Err(anyhow::anyhow!("Could not parse JSON response")),
+        }
     } else {
         log::error!("Failed to fetch Exchange Rates! System will rely on old data!");
         Ok(serde_json::from_str(RATE_API_FALLBACK)?)
