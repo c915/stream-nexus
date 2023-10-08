@@ -37,7 +37,6 @@ async fn main() -> Result<(), std::io::Error> {
     HttpServer::new(move || {
         App::new()
             .app_data(chat_for_server.clone())
-            .app_data(db.clone())
             .service(web::javascript)
             .service(web::stylesheet)
             .service(web::colors)
