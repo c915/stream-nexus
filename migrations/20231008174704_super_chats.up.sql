@@ -1,7 +1,7 @@
 -- Add up migration script here
 CREATE TABLE IF NOT EXISTS super_chats
 (
-    id BLOB PRIMARY KEY NOT NULL,
+    id INTEGER PRIMARY KEY NOT NULL,
     platform TEXT NOT NULL,
     username TEXT NOT NULL,
     message TEXT,
